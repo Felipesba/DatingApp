@@ -1,3 +1,4 @@
+using DatingApp.API.Models;
 using Documents.GitHub.DatingAPP.DatingApp.API.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,7 +10,6 @@ namespace Documents.GitHub.DatingAPP.DatingApp.API.Data
             base(options){ }
 
         public DbSet<Value> Values { get; set; }
-
-
+        public DbSet<User> Users { get; set; }
     }
 }
