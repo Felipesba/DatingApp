@@ -22,29 +22,24 @@ namespace DatingApp.API.Data
         {
             var user = await _dbcontext.Users.FirstOrDefaultAsync(x => x.UserName == username);
 
-            if (username == null)
-            {
+            if (user == null)
                 return null;
-            }
 
             if (!VerifyPassword(password, user.PassHash, user.PassSalt))
-            {
                 return null;
-            }
+
             return user;
         }
 
-        private bool VerifyPassword(string password, byte[] passwordHassh, byte[] passwordSalt)
+        private bool VerifyPassword(string password, byte[] passwordHash, byte[] passwordSalt)
         {
-            var hmac = new HMACSHA512(passwordSalt);
+            var hmac = new HMACSHA512(passwordSalt); 
             {
-                var computeHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                for (int i = 0; i < computeHash.Length; i++)
+                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                for (int i = 0; i < computedHash.Length; i++)
                 {
-                    if (computeHash[i] != passwordHassh[i])
-                    {
+                    if (computedHash[i] != passwordHash[i])
                         return false;
-                    }
                 }
             }
             return true;
@@ -64,12 +59,12 @@ namespace DatingApp.API.Data
             return (user);
         }
 
-        private void CreatePasswordHash(string password, out byte[] passwordHassh, out byte[] passwordSalt)
+        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             var hmac = new HMACSHA512();
             {
-                passwordHassh = hmac.Key;
-                passwordSalt = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                passwordSalt = hmac.Key;
+                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
             }
 
         }
